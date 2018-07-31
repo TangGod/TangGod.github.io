@@ -261,7 +261,7 @@ height:50vh;
                 
                 
                     <div class="post-intro-read">
-                        <span>Word count: <span class="post-count">7,025</span> / Reading time: <span class="post-count">26 min</span></span>
+                        <span>Word count: <span class="post-count">7,186</span> / Reading time: <span class="post-count">26 min</span></span>
                     </div>
                 
                 <div class="post-intro-meta">
@@ -402,21 +402,17 @@ height:50vh;
 <p>RocketMQ作为阿里开源的一款高性能、高吞吐量的消息中间件，它是怎样来解决这两个问题的？RocketMQ 有哪些关键特性？其实现原理是怎样的？</p>
 <h4 id="关键特性以及其实现原理"><a href="#关键特性以及其实现原理" class="headerlink" title="关键特性以及其实现原理"></a>关键特性以及其实现原理</h4><h5 id="一、顺序消息"><a href="#一、顺序消息" class="headerlink" title="一、顺序消息"></a>一、顺序消息</h5><p>消息有序指的是可以按照消息的发送顺序来消费。例如：一笔订单产生了 3 条消息，分别是订单创建、订单付款、订单完成。消费时，要按照顺序依次消费才有意义。与此同时多笔订单之间又是可以并行消费的。首先来看如下示例：</p>
 <p>假如生产者产生了2条消息：M1、M2，要保证这两条消息的顺序，应该怎样做？你脑中想到的可能是这样：</p>
-<p><img src="http://upload-images.jianshu.io/upload_images/7727785-21a961d0d2b2b22e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="你可能会采用这种方式保证消息顺序
-"></p>
+<p>你可能会采用这种方式保证消息顺序<br><img src="/2018/07/26/RocketMQ基本概念/1.png" alt="这里写图片描述"></p>
 <p>假定M1发送到S1，M2发送到S2，如果要保证M1先于M2被消费，那么需要M1到达消费端被消费后，通知S2，然后S2再将M2发送到消费端。</p>
 <p>这个模型存在的问题是，如果M1和M2分别发送到两台Server上，就不能保证M1先达到MQ集群，也不能保证M1被先消费。换个角度看，如果M2先于M1达到MQ集群，甚至M2被消费后，M1才达到消费端，这时消息也就乱序了，说明以上模型是不能保证消息的顺序的。如何才能在MQ集群保证消息的顺序？一种简单的方式就是将M1、M2发送到同一个Server上：</p>
-<p><img src="http://upload-images.jianshu.io/upload_images/7727785-22e1d725fcdcec19.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="保证消息顺序，你改进后的方法
-"></p>
+<p>![保证消息顺序，你改进后的方法<br><img src="/2018/07/26/RocketMQ基本概念/2.png" alt="这里写图片描述"></p>
 <p>这样可以保证M1先于M2到达MQServer（生产者等待M1发送成功后再发送M2），根据先达到先被消费的原则，M1会先于M2被消费，这样就保证了消息的顺序。</p>
 <p>这个模型也仅仅是理论上可以保证消息的顺序，在实际场景中可能会遇到下面的问题：</p>
-<p><img src="http://upload-images.jianshu.io/upload_images/7727785-f895040ddfb57a09.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="网络延迟问题
-"></p>
+<p>![网络延迟问题<br><img src="/2018/07/26/RocketMQ基本概念/3.png" alt="这里写图片描述"></p>
 <p>只要将消息从一台服务器发往另一台服务器，就会存在网络延迟问题。如上图所示，如果发送M1耗时大于发送M2的耗时，那么M2就仍将被先消费，仍然不能保证消息的顺序。即使M1和M2同时到达消费端，由于不清楚消费端1和消费端2的负载情况，仍然有可能出现M2先于M1被消费的情况。</p>
 <p>那如何解决这个问题？将M1和M2发往同一个消费者，且发送M1后，需要消费端响应成功后才能发送M2。</p>
 <p>聪明的你可能已经想到另外的问题：如果M1被发送到消费端后，消费端1没有响应，那是继续发送M2呢，还是重新发送M1？一般为了保证消息一定被消费，肯定会选择重发M1到另外一个消费端2，就如下图所示。</p>
-<p><img src="http://upload-images.jianshu.io/upload_images/7727785-fbd25082ff5d55c8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="保证消息顺序的正确姿势
-"></p>
+<p>![保证消息顺序的正确姿势<br><img src="/2018/07/26/RocketMQ基本概念/4.png" alt="这里写图片描述"></p>
 <p>这样的模型就严格保证消息的顺序，细心的你仍然会发现问题，消费端1没有响应Server时有两种情况，一种是M1确实没有到达(数据在网络传送中丢失)，另外一种消费端已经消费M1且已经发送响应消息，只是MQ Server端没有收到。如果是第二种情况，重发M1，就会造成M1被重复消费。也就引入了我们要说的第二个问题，消息重复问题，这个后文会详细讲解。</p>
 <p>回过头来看消息顺序问题，严格的顺序消息非常容易理解，也可以通过文中所描述的方式来简单处理。总结起来，要实现严格的顺序消息，简单且可行的办法就是：</p>
 <blockquote>
@@ -465,34 +461,28 @@ height:50vh;
 <p><strong>RocketMQ不保证消息不重复，如果你的业务需要保证严格的不重复消息，需要你自己在业务端去重。</strong></p>
 <h5 id="三、事务消息"><a href="#三、事务消息" class="headerlink" title="三、事务消息"></a>三、事务消息</h5><p>RocketMQ除了支持普通消息，顺序消息，另外还支持事务消息。首先讨论一下什么是事务消息以及支持事务消息的必要性。我们以一个转帐的场景为例来说明这个问题：Bob向Smith转账100块。</p>
 <p>在单机环境下，执行事务的情况，大概是下面这个样子：</p>
-<p><img src="http://upload-images.jianshu.io/upload_images/7727785-f0b59886af649a11.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="单机环境下转账事务示意图
-"></p>
+<p>![单机环境下转账事务示意图<br><img src="/2018/07/26/RocketMQ基本概念/5.png" alt="这里写图片描述"></p>
 <p>当用户增长到一定程度，Bob和Smith的账户及余额信息已经不在同一台服务器上了，那么上面的流程就变成了这样：</p>
-<p><img src="http://upload-images.jianshu.io/upload_images/7727785-37cba6f2bb4fb369.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="集群环境下转账事务示意图
-"></p>
+<p>![集群环境下转账事务示意图<br><img src="/2018/07/26/RocketMQ基本概念/6.png" alt="这里写图片描述"></p>
 <p>这时候你会发现，同样是一个转账的业务，在集群环境下，耗时居然成倍的增长，这显然是不能够接受的。那如何来规避这个问题？</p>
 <blockquote>
 <p><strong>大事务 = 小事务 + 异步</strong></p>
 </blockquote>
 <p>将大事务拆分成多个小事务异步执行。这样基本上能够将跨机事务的执行效率优化到与单机一致。转账的事务就可以分解成如下两个小事务：</p>
-<p><img src="http://upload-images.jianshu.io/upload_images/7727785-2fafdbfd8e2e566c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="小事务+异步消息
-"></p>
+<p>![小事务+异步消息<br><img src="/2018/07/26/RocketMQ基本概念/7.png" alt="这里写图片描述"></p>
 <p>图中执行本地事务（Bob账户扣款）和发送异步消息应该保证同时成功或者同时失败，也就是扣款成功了，发送消息一定要成功，如果扣款失败了，就不能再发送消息。那问题是：我们是先扣款还是先发送消息呢？</p>
 <p>首先看下先发送消息的情况，大致的示意图如下：</p>
-<p><img src="http://upload-images.jianshu.io/upload_images/7727785-8a1850524c99b313.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="事务消息：先发送消息
-"></p>
+<p>![事务消息：先发送消息<br><img src="/2018/07/26/RocketMQ基本概念/8.png" alt="这里写图片描述"></p>
 <p>存在的问题是：如果消息发送成功，但是扣款失败，消费端就会消费此消息，进而向Smith账户加钱。</p>
 <p>先发消息不行，那就先扣款吧，大致的示意图如下：</p>
-<p><img src="http://upload-images.jianshu.io/upload_images/7727785-1e30ed90fb7cbee7.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="事务消息-先扣款
-"></p>
+<p>![事务消息-先扣款<br><img src="/2018/07/26/RocketMQ基本概念/9.png" alt="这里写图片描述"></p>
 <p>存在的问题跟上面类似：如果扣款成功，发送消息失败，就会出现Bob扣钱了，但是Smith账户未加钱。</p>
 <p>可能大家会有很多的方法来解决这个问题，比如：直接将发消息放到Bob扣款的事务中去，如果发送失败，抛出异常，事务回滚。这样的处理方式也符合“恰好”不需要解决的原则。</p>
 <blockquote>
 <p>这里需要说明一下：如果使用Spring来管理事物的话，大可以将发送消息的逻辑放到本地事物中去，发送消息失败抛出异常，Spring捕捉到异常后就会回滚此事物，以此来保证本地事物与发送消息的原子性。</p>
 </blockquote>
 <p>RocketMQ支持事务消息，下面来看看RocketMQ是怎样来实现的。</p>
-<p><img src="http://upload-images.jianshu.io/upload_images/7727785-312ca734453a0619.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="RocketMQ实现发送事务消息
-"></p>
+<p>![RocketMQ实现发送事务消息<br><img src="/2018/07/26/RocketMQ基本概念/10.png" alt="这里写图片描述"></p>
 <p>RocketMQ第一阶段发送<code>Prepared消息</code>时，会拿到消息的地址，第二阶段执行本地事物，第三阶段通过第一阶段拿到的地址去访问消息，并修改消息的状态。</p>
 <p>细心的你可能又发现问题了，如果确认消息发送失败了怎么办？RocketMQ会定期扫描消息集群中的事物消息，如果发现了<code>Prepared消息</code>，它会向消息发送端(生产者)确认，Bob的钱到底是减了还是没减呢？如果减了是回滚还是继续发送确认消息呢？RocketMQ会根据发送端设置的策略来决定是回滚还是继续发送确认消息。这样就保证了消息发送与本地事务同时成功或同时失败。</p>
 <p>那我们来看下RocketMQ源码，是如何处理事务消息的。客户端发送事务消息的部分（完整代码请查看：<code>rocketmq-example</code>工程下的<code>com.alibaba.rocketmq.example.transaction.TransactionProducer</code>）：</p>
@@ -508,8 +498,7 @@ height:50vh;
 </ol>
 <p>如果<code>endTransaction</code>方法执行失败，数据没有发送到<code>broker</code>，导致事务消息的 状态更新失败，<code>broker</code>会有回查线程定时（默认1分钟）扫描每个存储事务状态的表格文件，如果是已经提交或者回滚的消息直接跳过，如果是<code>prepared状态</code>则会向<code>Producer</code>发起<code>CheckTransaction</code>请求，<code>Producer</code>会调用<code>DefaultMQProducerImpl.checkTransactionState()</code>方法来处理<code>broker</code>的定时回调请求，而<code>checkTransactionState</code>会调用我们的事务设置的决断方法来决定是回滚事务还是继续执行，最后调用<code>endTransactionOneway</code>让<code>broker</code>来更新消息的最终状态。</p>
 <p>再回到转账的例子，如果Bob的账户的余额已经减少，且消息已经发送成功，Smith端开始消费这条消息，这个时候就会出现消费失败和消费超时两个问题，解决超时问题的思路就是一直重试，直到消费端消费消息成功，整个过程中有可能会出现消息重复的问题，按照前面的思路解决即可。</p>
-<p><img src="http://upload-images.jianshu.io/upload_images/7727785-b87a11b60c004d20.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="消费事务消息
-"></p>
+<p>![消费事务消息<br><img src="/2018/07/26/RocketMQ基本概念/11.png" alt="这里写图片描述"></p>
 <p>这样基本上可以解决消费端超时问题，但是如果消费失败怎么办？阿里提供给我们的解决方法是：<strong>人工解决</strong>。大家可以考虑一下，按照事务的流程，因为某种原因Smith加款失败，那么需要回滚整个流程。如果消息系统要实现这个回滚流程的话，系统复杂度将大大提升，且很容易出现Bug，估计出现Bug的概率会比消费失败的概率大很多。这也是RocketMQ目前暂时没有解决这个问题的原因，在设计实现消息系统时，我们需要衡量是否值得花这么大的代价来解决这样一个出现概率非常小的问题，这也是大家在解决疑难问题时需要多多思考的地方。</p>
 <blockquote>
 <p>20160321补充：在3.2.6版本中移除了事务消息的实现，所以此版本不支持事务消息，具体情况请参考rocketmq的issues：</p>
@@ -518,8 +507,7 @@ height:50vh;
 <p><a href="https://link.jianshu.com?t=https://github.com/alibaba/RocketMQ/issues/156" target="_blank" rel="noopener">https://github.com/alibaba/RocketMQ/issues/156</a></p>
 </blockquote>
 <h5 id="四、Producer如何发送消息"><a href="#四、Producer如何发送消息" class="headerlink" title="四、Producer如何发送消息"></a>四、Producer如何发送消息</h5><p><code>Producer</code>轮询某topic下的所有队列的方式来实现发送方的负载均衡，如下图所示：</p>
-<p><img src="http://upload-images.jianshu.io/upload_images/7727785-1f4ec90b24a8cb60.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="producer发送消息负载均衡
-"></p>
+<p>![producer发送消息负载均衡<br><img src="/2018/07/26/RocketMQ基本概念/12.png" alt="这里写图片描述"></p>
 <p>首先分析一下RocketMQ的客户端发送消息的源码：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">// 构造Producer</span><br><span class="line">DefaultMQProducer producer = new DefaultMQProducer(&quot;ProducerGroupName&quot;);</span><br><span class="line">// 初始化Producer，整个应用生命周期内，只需要初始化1次</span><br><span class="line">producer.start();</span><br><span class="line">// 构造Message</span><br><span class="line">Message msg = new Message(&quot;TopicTest1&quot;,// topic</span><br><span class="line">                        &quot;TagA&quot;,// tag：给消息打标签,用于区分一类消息，可为null</span><br><span class="line">                        &quot;OrderID188&quot;,// key：自定义Key，可以用于去重，可为null</span><br><span class="line">                        (&quot;Hello MetaQ&quot;).getBytes());// body：消息内容</span><br><span class="line">// 发送消息并返回结果</span><br><span class="line">SendResult sendResult = producer.send(msg);</span><br><span class="line">// 清理资源，关闭网络连接，注销自己</span><br><span class="line">producer.shutdown();</span><br></pre></td></tr></table></figure>
 <p>在整个应用生命周期内，生产者需要调用一次start方法来初始化，初始化主要完成的任务有：</p>
@@ -551,8 +539,7 @@ height:50vh;
 <p>每个<code>topic</code>下的每个<code>queue</code>都有一个对应的<code>consumequeue</code>文件，比如：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$&#123;rocketmq.home&#125;/store/consumequeue/$&#123;topicName&#125;/$&#123;queueId&#125;/$&#123;fileName&#125;</span><br></pre></td></tr></table></figure>
 <p>Consume Queue文件组织，如图所示：</p>
-<p><img src="http://upload-images.jianshu.io/upload_images/7727785-66ee3f393e4e3fc6.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Consume Queue文件组织示意图
-"></p>
+<p>![Consume Queue文件组织示意图<br><img src="/2018/07/26/RocketMQ基本概念/13.png" alt="这里写图片描述"></p>
 <ol>
 <li><p>根据<code>topic</code>和<code>queueId</code>来组织文件，图中TopicA有两个队列0,1，那么TopicA和QueueId=0组成一个ConsumeQueue，TopicA和QueueId=1组成另一个ConsumeQueue。</p>
 </li>
@@ -565,8 +552,7 @@ height:50vh;
 <p>死信队列（Dead Letter Queue）一般用于存放由于某种原因无法传递的消息，比如处理失败或者已经过期的消息。</p>
 </blockquote>
 <p>Consume Queue中存储单元是一个20字节定长的二进制数据，顺序写顺序读，如下图所示：</p>
-<p><img src="http://upload-images.jianshu.io/upload_images/7727785-394c143e1cfa08fd.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="consumequeue文件存储单元格式
-"></p>
+<p>![consumequeue文件存储单元格式<br><img src="/2018/07/26/RocketMQ基本概念/14.png" alt="这里写图片描述"></p>
 <ol>
 <li><p>CommitLog Offset是指这条消息在Commit Log文件中的实际偏移量</p>
 </li>
@@ -579,13 +565,11 @@ height:50vh;
 <p>文件的默认位置如下，仍然可通过配置文件修改：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$&#123;user.home&#125; \store\$&#123;commitlog&#125;\$&#123;fileName&#125;</span><br></pre></td></tr></table></figure>
 <p>CommitLog的消息存储单元长度不固定，文件顺序写，随机读。消息的存储结构如下表所示，按照编号顺序以及编号对应的内容依次存储。</p>
-<p><img src="http://upload-images.jianshu.io/upload_images/7727785-e3dc00da1f4badce.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Commit Log存储单元结构图
-"></p>
+<p>![Commit Log存储单元结构图<br><img src="/2018/07/26/RocketMQ基本概念/15.png" alt="这里写图片描述"></p>
 <h6 id="3、消息存储实现"><a href="#3、消息存储实现" class="headerlink" title="3、消息存储实现"></a>3、消息存储实现</h6><p>消息存储实现，比较复杂，也值得大家深入了解，后面会单独成文来分析(目前正在收集素材)，这小节只以代码说明一下具体的流程。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">// Set the storage time</span><br><span class="line">msg.setStoreTimestamp(System.currentTimeMillis());</span><br><span class="line">// Set the message body BODY CRC (consider the most appropriate setting</span><br><span class="line">msg.setBodyCRC(UtilAll.crc32(msg.getBody()));</span><br><span class="line">StoreStatsService storeStatsService = this.defaultMessageStore.getStoreStatsService();</span><br><span class="line">synchronized (this) &#123;</span><br><span class="line">    long beginLockTimestamp = this.defaultMessageStore.getSystemClock().now();</span><br><span class="line">    // Here settings are stored timestamp, in order to ensure an orderly global</span><br><span class="line">    msg.setStoreTimestamp(beginLockTimestamp);</span><br><span class="line">    // MapedFile：操作物理文件在内存中的映射以及将内存数据持久化到物理文件中</span><br><span class="line">    MapedFile mapedFile = this.mapedFileQueue.getLastMapedFile();</span><br><span class="line">    // 将Message追加到文件commitlog</span><br><span class="line">    result = mapedFile.appendMessage(msg, this.appendMessageCallback);</span><br><span class="line">    switch (result.getStatus()) &#123;</span><br><span class="line">    case PUT_OK:break;</span><br><span class="line">    case END_OF_FILE:</span><br><span class="line">         // Create a new file, re-write the message</span><br><span class="line">         mapedFile = this.mapedFileQueue.getLastMapedFile();</span><br><span class="line">         result = mapedFile.appendMessage(msg, this.appendMessageCallback);</span><br><span class="line">     break;</span><br><span class="line">     DispatchRequest dispatchRequest = new DispatchRequest(</span><br><span class="line">                topic,// 1</span><br><span class="line">                queueId,// 2</span><br><span class="line">                result.getWroteOffset(),// 3</span><br><span class="line">                result.getWroteBytes(),// 4</span><br><span class="line">                tagsCode,// 5</span><br><span class="line">                msg.getStoreTimestamp(),// 6</span><br><span class="line">                result.getLogicsOffset(),// 7</span><br><span class="line">                msg.getKeys(),// 8</span><br><span class="line">                /**</span><br><span class="line">                 * Transaction</span><br><span class="line">                 */</span><br><span class="line">                msg.getSysFlag(),// 9</span><br><span class="line">                msg.getPreparedTransactionOffset());// 10</span><br><span class="line">    // 1.分发消息位置到ConsumeQueue</span><br><span class="line">    // 2.分发到IndexService建立索引</span><br><span class="line">    this.defaultMessageStore.putDispatchRequest(dispatchRequest);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h6 id="4、消息的索引文件"><a href="#4、消息的索引文件" class="headerlink" title="4、消息的索引文件"></a>4、消息的索引文件</h6><p>如果一个消息包含key值的话，会使用IndexFile存储消息索引，文件的内容结构如图：</p>
-<p><img src="http://upload-images.jianshu.io/upload_images/7727785-07bc603ae92d1007.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="消息索引
-"></p>
+<p>![消息索引<br><img src="/2018/07/26/RocketMQ基本概念/16.png" alt="这里写图片描述"></p>
 <p>索引文件主要用于根据key来查询消息的，流程主要是：</p>
 <ol>
 <li><p>根据查询的 key 的 hashcode%slotNum 得到具体的槽的位置(slotNum 是一个索引文件里面包含的最大槽的数目，例如图中所示 slotNum=5000000)</p>
@@ -597,8 +581,7 @@ height:50vh;
 </ol>
 <h5 id="六、消息订阅"><a href="#六、消息订阅" class="headerlink" title="六、消息订阅"></a>六、消息订阅</h5><p>RocketMQ消息订阅有两种模式，一种是Push模式，即MQServer主动向消费端推送；另外一种是Pull模式，即消费端在需要时，主动到MQServer拉取。但在具体实现时，Push和Pull模式都是采用消费端主动拉取的方式。</p>
 <p>首先看下消费端的负载均衡：</p>
-<p><img src="http://upload-images.jianshu.io/upload_images/7727785-c68f83fb87461000.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="消费端负载均衡
-"></p>
+<p>![消费端负载均衡<br><img src="/2018/07/26/RocketMQ基本概念/17.png" alt="这里写图片描述"></p>
 <p>消费端会通过RebalanceService线程，10秒钟做一次基于topic下的所有队列负载：</p>
 <ol>
 <li><p>遍历Consumer下的所有topic，然后根据topic订阅所有的消息</p>
@@ -611,8 +594,7 @@ height:50vh;
 <p>如同上图所示：如果有 5 个队列，2 个 consumer，那么第一个 Consumer 消费 3 个队列，第二 consumer 消费 2 个队列。这里采用的就是平均分配策略，它类似于分页的过程，TOPIC下面的所有queue就是记录，Consumer的个数就相当于总的页数，那么每页有多少条记录，就类似于某个Consumer会消费哪些队列。</p>
 <p>通过这样的策略来达到大体上的平均消费，这样的设计也可以很方面的水平扩展Consumer来提高消费能力。</p>
 <p>消费端的Push模式是通过长轮询的模式来实现的，就如同下图：</p>
-<p><img src="http://upload-images.jianshu.io/upload_images/7727785-b075815d43a87bf9.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Push模式示意图
-"></p>
+<p>![Push模式示意图<br><img src="/2018/07/26/RocketMQ基本概念/18.png" alt="这里写图片描述"></p>
 <p>Consumer端每隔一段时间主动向broker发送拉消息请求，broker在收到Pull请求后，如果有消息就立即返回数据，Consumer端收到返回的消息后，再回调消费者设置的Listener方法。如果broker在收到Pull请求时，消息队列里没有数据，broker端会阻塞请求直到有数据传递或超时才返回。</p>
 <p>当然，Consumer端是通过一个线程将阻塞队列<code>LinkedBlockingQueue&lt;PullRequest&gt;</code>中的<code>PullRequest</code>发送到broker拉取消息，以防止Consumer一致被阻塞。而Broker端，在接收到Consumer的<code>PullRequest</code>时，如果发现没有消息，就会把<code>PullRequest</code>扔到ConcurrentHashMap中缓存起来。broker在启动时，会启动一个线程不停的从ConcurrentHashMap取出<code>PullRequest</code>检查，直到有数据返回。</p>
 <h5 id="七、RocketMQ的其他特性"><a href="#七、RocketMQ的其他特性" class="headerlink" title="七、RocketMQ的其他特性"></a>七、RocketMQ的其他特性</h5><p>前面的6个特性都是基本上都是点到为止，想要深入了解，还需要大家多多查看源码，多多在实际中运用。当然除了已经提到的特性外，RocketMQ还支持：</p>
@@ -696,16 +678,16 @@ height:50vh;
         <li class="next">
             
                 <div class="nextSlogan">Next Post</div>
-                <a href= "/2018/07/26/RPC/" title= RPC >
-                    <div class="nextTitle">RPC</div>
+                <a href= "/2018/07/26/Serializable/" title= Serializable >
+                    <div class="nextTitle">Serializable</div>
                 </a>
             
         </li>
         <li class="previous">
             
                 <div class="prevSlogan">Previous Post</div>
-                <a href= "/2018/07/26/Serializable/" title= Serializable >
-                    <div class="prevTitle">Serializable</div>
+                <a href= "/2018/07/26/nginx/" title= nginx >
+                    <div class="prevTitle">nginx</div>
                 </a>
             
         </li>
@@ -1006,9 +988,646 @@ top:50vh;
     
     
     
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     <div class="total-and-search">
         <div class="total-archive">
-        Total : 10
+        Total : 37
         </div>
         <!-- search  -->
         
@@ -1024,22 +1643,37 @@ top:50vh;
     
     
         <li class="archive-post-item">
-            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/高并发编程-1/" >高并发编程-1</a>
+            <span class="archive-post-date">07/28</span><a class="archive-post-title" href= "/2018/07/28/dubbo源码深度解剖/" >dubbo源码深度解剖</a>
         </li>
     
     
         <li class="archive-post-item">
-            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/网络编程基本概念/" >网络编程基本概念</a>
+            <span class="archive-post-date">07/27</span><a class="archive-post-title" href= "/2018/07/27/Spring详解1概念篇（基于《spring实战第四版》）/" >Spring详解1概念篇（基于《spring实战第四版》）</a>
         </li>
     
     
         <li class="archive-post-item">
-            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/《Netty实战4.1.16》/" >《Netty实战4.1.16》</a>
+            <span class="archive-post-date">07/27</span><a class="archive-post-title" href= "/2018/07/27/Spring详解4缓存与MQ概念篇（基于《spring实战第四版》）/" >Spring详解4缓存与MQ概念篇（基于《spring实战第四版》）</a>
         </li>
     
     
         <li class="archive-post-item">
-            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/nginx/" >nginx</a>
+            <span class="archive-post-date">07/27</span><a class="archive-post-title" href= "/2018/07/27/Spring详解3WEB篇（基于《spring实战第四版》）/" >Spring详解3WEB篇（基于《spring实战第四版》）</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/27</span><a class="archive-post-title" href= "/2018/07/27/Spring详解2配置篇（基于《spring实战第四版》）/" >Spring详解2配置篇（基于《spring实战第四版》）</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/zookeeper原理/" >zookeeper原理</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/集合总体大纲/" >集合总体大纲</a>
         </li>
     
     
@@ -1049,7 +1683,17 @@ top:50vh;
     
     
         <li class="archive-post-item">
-            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/Serializable/" >Serializable</a>
+            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/Netty——基本概念/" >Netty——基本概念</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/nginx/" >nginx</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/高并发编程-1/" >高并发编程-1</a>
         </li>
     
     
@@ -1064,7 +1708,117 @@ top:50vh;
     
     
         <li class="archive-post-item">
-            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/Netty——基本概念/" >Netty——基本概念</a>
+            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/springboot基本概念/" >springboot基本概念</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/FastDFS/" >FastDFS</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/单体架构与微服务架构/" >单体架构与微服务架构</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/mangoDB基本操作和优化/" >mangoDB基本操作和优化</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/ArrayList1.6/" >ArrayList1.6</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/MQ选型对比RabbitMQ RocketMQ ActiveMQ Kafka/" >MQ选型对比RabbitMQ RocketMQ ActiveMQ Kafka</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/HashMap1.6/" >HashMap1.6</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/redis的主从复制、哨兵、集群/" >redis的主从复制、哨兵、集群</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/ArrayList源码的数组copy方法/" >ArrayList源码的数组copy方法</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/shiro基本使用/" >shiro基本使用</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/HashMap1.8/" >HashMap1.8</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/《Netty实战4.1.16》/" >《Netty实战4.1.16》</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/HashSet1.6/" >HashSet1.6</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/ActiveMQ/" >ActiveMQ</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/mysql sql概念/" >mysql sql概念</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/java中方法传参/" >java中方法传参</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/Serializable/" >Serializable</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/TreeMap1.6/" >TreeMap1.6</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/LinkedList1.6 与 1.8对比/" >LinkedList1.6 与 1.8对比</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/redis安装/" >redis安装</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/layim+springBoot+netty+（dubbo__cloud）搭建web聊天系统（学习高并发）/" >layim+springBoot+netty+（dubbo__cloud）搭建web聊天系统（学习高并发）</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/网络编程基本概念/" >网络编程基本概念</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/session共享/" >session共享</a>
         </li>
     
     
@@ -1111,6 +1865,16 @@ jsonContent:
     <div class="sidebar-categories-name">
     
         <span class="sidebar-category-name" data-categories="网络"><span class="iconfont-archer">&#xe60a;</span>网络</span>
+    
+        <span class="sidebar-category-name" data-categories="中间件"><span class="iconfont-archer">&#xe60a;</span>中间件</span>
+    
+        <span class="sidebar-category-name" data-categories="基本框架"><span class="iconfont-archer">&#xe60a;</span>基本框架</span>
+    
+        <span class="sidebar-category-name" data-categories="数据库"><span class="iconfont-archer">&#xe60a;</span>数据库</span>
+    
+        <span class="sidebar-category-name" data-categories="JDK"><span class="iconfont-archer">&#xe60a;</span>JDK</span>
+    
+        <span class="sidebar-category-name" data-categories="分布式"><span class="iconfont-archer">&#xe60a;</span>分布式</span>
     
     </div>
     <div class="iconfont-archer sidebar-categories-empty">&#xe678;</div>
