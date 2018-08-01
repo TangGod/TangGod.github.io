@@ -339,16 +339,57 @@
     
     
     <article class="index-post">
-        <a class="abstract-title" href = "/2018/07/26/HashMap1.8/" >
+        <a class="abstract-title" href = "/2018/07/26/mysql sql概念/" >
             
-                <span>HashMap1.8</span>
+                <span>mysql sql概念</span>
         </a>
         <div class="abstract-content">
-            #一、前言
-　　在分析jdk1.8后的HashMap源码时，发现网上好多分析都是基于之前的jdk，而Java8的HashMap对之前做了较大的优化，其中最重要的一个优化就是桶中的元素不再唯一按照链表组合，也可以使用红黑树进行存储，总之，目标只有一个，那就是在安全和功能性完备的情况下让其速度更快，提升性能。好~下面就开始分析源码。HashMap会对null值key进行特殊处理，总是放到table[0]位置详解hashMap1.8：https://www.cnblogs.com/CherishFX/p/4739712.html
-#二、HashMap数据结构
+            概念：1.首先sql优化，索引的分类，区别2.存储引擎3.存储过程(我们用的函数,传参进去,每次不用编译了，加快了效率)，视图，游标的概念4.mysql几种连接的区别，外连接和内链接
+5.比较高级的问题就是，mysql事务，行锁，表锁，mysql主从复制，读者分离原理，分库分表6.乐观锁和悲观锁实现原理
+优化：1.对查询进行优化，应尽量避免全表扫描，首先应考虑在 where 及 order by 涉及的列上建立索引。 
+2.应尽量避免在 where 子句中使用!=或&lt;&gt;操作符，否则将引擎放弃使用索引而进行全表扫描。 
+3.应尽量避免在 where 子句中对字段进行 null ...
+        </div>
+        <div class="abstract-post-meta">
+            <!-- date  -->
+            <div class="abstract-date">
+                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2018/07/26</span>
+            </div>
+            <!-- tags  -->
+            
+        </div>
+    </article>
+    
+    
+    
+    
+    
+    
+    <article class="index-post">
+        <a class="abstract-title" href = "/2018/07/26/单体架构与微服务架构/" >
+            
+                <span>单体架构与微服务架构</span>
+        </a>
+        <div class="abstract-content">
+            1.单体架构与微服务架构
+单体架构
+微服务架构
+微服务和单体区别
+单体变微服务的策略
 
-   说明：上图很形象的展示了H...
+微服务架构区别
+微服务4个设计原则2.springCloud
+springCloud与dubbo比较spring cloud与dubbo的性能对比测试：链接
+版本规则
+版本规则1.传统的版本号规则是什么？
+springframework-4.3.11.RELEASE
+4.3.11.RELEASE
+主版本号.次版本号.增强版本号.里程碑版本号
+主版本号：项目的重大重构
+次版本号：新功能的添加和变化
+增强版本号：bug的修复
+里程碑版本号：RELEASE
+2.为什么springcloud版本用的是单词而不...
         </div>
         <div class="abstract-post-meta">
             <!-- date  -->
@@ -366,121 +407,80 @@
     
     
     <article class="index-post">
-        <a class="abstract-title" href = "/2018/07/26/HashSet1.6/" >
+        <a class="abstract-title" href = "/2018/07/26/zookeeper原理/" >
             
-                <span>HashSet1.6</span>
+                <span>zookeeper原理</span>
         </a>
         <div class="abstract-content">
-            前言今天来介绍下HashSet。前面，我们已经系统的对List和Map进行了学习。接下来，我们开始可以学习Set。相信经过Map的了解之后，学习Set会容易很多。毕竟，Set的实现类都是基于Map来实现的(HashSet是通过HashMap实现的)。
-构造图如下:
-蓝色线条：继承
-绿色线条：接口实现
+            ZooKeeper是一个分布式的，开放源码的分布式应用程序协调服务，它包含一个简单的原语集，分布式应用程序可以基于它实现同步服务，配置维护和命名服务等。Zookeeper是hadoop的一个子项目，其发展历程无需赘述。在分布式应用中，由于工程师不能很好地使用锁机制，以及基于消息的协调机制不适合在某些应用中使用，因此需要有一种可靠的、可扩展的、分布式的、可配置的协调机制来统一系统的状态。Zookeeper的目的就在于此。本文简单分析zookeeper的工作原理，对于如何使用zookeeper不是本文讨论的重点。
+1 Zookeeper的基本概念1.1 角色
+Zookeeper中的角色主要有...
+        </div>
+        <div class="abstract-post-meta">
+            <!-- date  -->
+            <div class="abstract-date">
+                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2018/07/26</span>
+            </div>
+            <!-- tags  -->
+            
+        </div>
+    </article>
+    
+    
+    
+    
+    
+    
+    <article class="index-post">
+        <a class="abstract-title" href = "/2018/07/26/高并发编程-1/" >
+            
+                <span>高并发编程-1</span>
+        </a>
+        <div class="abstract-content">
+            概念：
+1-继承Thread类创建线程类
 
-正文对于HashSet而言，它是基于HashMap来实现的，底层采用HashMap来保存元素。所以如果对HashMap比较熟悉，那么HashSet是so  easy!!
-HashSet简介HashSet定义123public class HashSet&lt;E&gt;     exten...
-        </div>
-        <div class="abstract-post-meta">
-            <!-- date  -->
-            <div class="abstract-date">
-                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2018/07/26</span>
-            </div>
-            <!-- tags  -->
-            
-        </div>
-    </article>
-    
-    
-    
-    
-    
-    
-    <article class="index-post">
-        <a class="abstract-title" href = "/2018/07/26/LinkedList1.6 与 1.8对比/" >
-            
-                <span>LinkedList1.6 与 1.8对比</span>
-        </a>
-        <div class="abstract-content">
-            前言今天来介绍下LinkedList，在集合框架整体框架一章中，我们介绍了List接口，LinkedList与ArrayList一样实现List接口，只是ArrayList是List接口的大小可变数组的实现，LinkedList是List接口链表的实现。基于链表实现的方式使得LinkedList在插入和删除时更优于ArrayList，而随机访问则比ArrayList逊色些。
-linkedlist：增linkLast(E e)；速度快：创建新节点，改变节点指向便可linkBefore(E e, Node succ)；速度快：先采用二分查找，找到插入位置元素，之后创建节点改变指向addAll...
-        </div>
-        <div class="abstract-post-meta">
-            <!-- date  -->
-            <div class="abstract-date">
-                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2018/07/26</span>
-            </div>
-            <!-- tags  -->
-            
-        </div>
-    </article>
-    
-    
-    
-    
-    
-    
-    <article class="index-post">
-        <a class="abstract-title" href = "/2018/07/26/TreeMap1.6/" >
-            
-                <span>TreeMap1.6</span>
-        </a>
-        <div class="abstract-content">
-            前言今天来介绍下TreeMap,TreeMap是基于红黑树结构实现的一种Map，要分析TreeMap的实现首先就要对红黑树有所了解。
-构造图如下:
-蓝色线条：继承
-绿色线条：接口实现
+2-通过Runable接口创建线程类
 
-正文TreeMap底层是基于红黑树（Red-Black tree）实现，所以在学习TreeMap之前我们先来了解下红黑树。
-红黑树又称红-黑二叉树，它首先是一颗二叉树，它具体二叉树所有的特性。同时红黑树更是一颗自平衡的排序二叉树。
-我们知道一颗基本的二叉树他们都需要满足一个基本性质–即树中的任何节点的值大于它的左子节点，且小于它的右子节点。按照这个基本性质使得树的检索效率大大提高。我们知道在生成二叉树的过...
-        </div>
-        <div class="abstract-post-meta">
-            <!-- date  -->
-            <div class="abstract-date">
-                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2018/07/26</span>
-            </div>
-            <!-- tags  -->
-            
-        </div>
-    </article>
-    
-    
-    
-    
-    
-    
-    <article class="index-post">
-        <a class="abstract-title" href = "/2018/07/26/TCP协议/" >
-            
-                <span>TCP协议</span>
-        </a>
-        <div class="abstract-content">
-            为什么会有TCP/IP协议在世界上各地，各种各样的电脑运行着各自不同的操作系统为大家服务，这些电脑在表达同一种信息的时候所使用的方法是千差万别。就好像圣经中上帝打乱了各地人的口音，让他们无法合作一样。计算机使用者意识到，计算机只是单兵作战并不会发挥太大的作用。只有把它们联合起来，电脑才会发挥出它最大的潜力。于是人们就想方设法的用电线把电脑连接到了一起。
-但是简单的连到一起是远远不够的，就好像语言不同的两个人互相见了面，完全不能交流信息。因而他们需要定义一些共通的东西来进行交流，TCP/IP就是为此而生。TCP/IP不是一个协议，而是一个协议族的统称。里面包括了IP协议，IMCP协议，TC...
-        </div>
-        <div class="abstract-post-meta">
-            <!-- date  -->
-            <div class="abstract-date">
-                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2018/07/26</span>
-            </div>
-            <!-- tags  -->
-            
-        </div>
-    </article>
-    
-    
-    
-    
-    
-    
-    <article class="index-post">
-        <a class="abstract-title" href = "/2018/07/26/java中方法传参/" >
-            
-                <span>java中方法传参</span>
-        </a>
-        <div class="abstract-content">
-            
+3- 通过Callable和FutureTask创建线程
 
-1）.方法传参中调用者传的对象与使用者得到的对象,指向的是同一个内存地址,所以修改的是同一个对象。(不做clone操作的情况下)例：         1.图中所有调用list对象的方法，引用的都是同一个list内存对象。         2.图中 ref2的user(从list中取出的)与main中的user1指向的是同一个对象,所以当调用完，返回main方法时,再修改user1仍然修改了list中的user对象的值。         3.图中ref2中的user如果是重新new出的话,返回到main方法时,再修改user1则不对list中user对象的值生效,因为他们指向的不是同一...
+        a. 创建Callable接口的实现类，并实现call()方法；
+
+        b. 创建Callable实现类的实例，使用FutureTask类来包装Callable对象，该FutureTask对象封装了该Callback对象的call()方法的返回值；
+
+        c. 使用FutureTask对象作为Thread对象的target创建并启动新线程；
+
+        d. 调用FutureTask对象的get()方...
+        </div>
+        <div class="abstract-post-meta">
+            <!-- date  -->
+            <div class="abstract-date">
+                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2018/07/26</span>
+            </div>
+            <!-- tags  -->
+            
+        </div>
+    </article>
+    
+    
+    
+    
+    
+    
+    <article class="index-post">
+        <a class="abstract-title" href = "/2018/07/26/redis的主从复制、哨兵、集群/" >
+            
+                <span>redis的主从复制、哨兵、集群</span>
+        </a>
+        <div class="abstract-content">
+            1.redis主从复制概述
+1、redis的复制功能是支持多个数据库之间的数据同步。一类是主数据库（master）一类是从数据库（slave），主数据库可以进行读写操作，当发生写操作的时候自动将数据同步到从数据库，而从数据库一般是只读的，并接收主数据库同步过来的数据，一个主数据库可以有多个从数据库，而一个从数据库只能有一个主数据库。
+2、通过redis的复制功能可以很好的实现数据库的读写分离，提高服务器的负载能力。主数据库主要进行写操作，而从数据库负责读操作。
+主从复制过程
+主从复制过程：见下图
+主从复制过程过程：
+1：当一个从数据库启动时，会向主数据库发送sync命令，
+2：主数据库接...
         </div>
         <div class="abstract-post-meta">
             <!-- date  -->
@@ -524,10 +524,115 @@ Collection接口、子接口以及实现类Collection接口
         </div>
     </article>
     
+    
+    
+    
+    
+    
+    <article class="index-post">
+        <a class="abstract-title" href = "/2018/07/26/网络编程基本概念/" >
+            
+                <span>网络编程基本概念</span>
+        </a>
+        <div class="abstract-content">
+            1.阻塞IO—Socket
+Socket又称“套接字”，应用程序通常通过“套接字”向网络发出请求或应答网络请求。
+Socket和ServerSocket类库位于java.net包中。ServerSocket用于服务器端，Socket是建立网络连接时使用的。在连接成功时，应用程序两端都会产生一个Socket实例，操作这个实例，完成所需的会话。对于一个网络连接来说，套接字是平等的，不会因为在服务器端或在客户端而产生不同的级别。不管是ServerSocket还是Socket，它们的工作都是通过SocketImpl类及其子类完成的。
+套接字的连接过程可以分为四个步骤：服务器监听、客户端请求服务器...
+        </div>
+        <div class="abstract-post-meta">
+            <!-- date  -->
+            <div class="abstract-date">
+                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2018/07/26</span>
+            </div>
+            <!-- tags  -->
+            
+        </div>
+    </article>
+    
+    
+    
+    
+    
+    
+    <article class="index-post">
+        <a class="abstract-title" href = "/2018/07/26/工厂方法模式/" >
+            
+                <span>工厂方法模式</span>
+        </a>
+        <div class="abstract-content">
+            前言上一篇介绍简单工厂模式的时候提到它对开闭原则支持的不够，因为如果有新的产品加入到系统中去，就需要修改工厂类，就违反了开闭原则了，这次介绍的工厂方法模式在保持简单工厂模式优点的前提下，还满足了开闭原则，关键在于它的多态性。
+正文工厂方法模式概念工厂方法模式是类的创建模式，又叫做虚拟构造子(Cirtual Constructor)模式或者多态工厂（Polymorphic Factory）模式。
+工厂方法模式的用意是定义一个创建产品对象的工厂接口，将实际创建工作推迟到子类中。
+首先，在工厂方法模式中，核心的工厂类不再负责所有产品的创建，而是将具体创建的工作交给子类去做.这个核心类则摇身一变...
+        </div>
+        <div class="abstract-post-meta">
+            <!-- date  -->
+            <div class="abstract-date">
+                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2018/07/26</span>
+            </div>
+            <!-- tags  -->
+            
+        </div>
+    </article>
+    
+    
+    
+    
+    
+    
+    <article class="index-post">
+        <a class="abstract-title" href = "/2018/07/26/抽象工厂模式/" >
+            
+                <span>抽象工厂模式</span>
+        </a>
+        <div class="abstract-content">
+            前言接着上一篇工厂方法模式说，现在披萨店生意很好，除了卖披萨，又卖汉堡，并且为了适用不同的客户群体，增加了单人套餐和家庭套餐。这种情况下多了一个产品汉堡，已经不适合用工厂方法模式了，这时候就要用到更加抽象化的抽象工厂模式来满足这个系统。
+正文抽象工厂模式概念抽象工厂模式是所有形态的工厂模式中最为抽象和最具一般性的一种形态。抽象工厂模式可以向客户端提供一个接口，使得客户端在不必指定产品的具体类型的情况下，创建多个产品族中的产品对象。这就是抽象工厂的用意。
+抽象工厂模式的结构抽象工厂模式的简略类图如下:
+
+从上图可以看出， 抽象工厂模式涉及到抽象工厂角色，具体工厂角色，抽象产品角色以及具体产...
+        </div>
+        <div class="abstract-post-meta">
+            <!-- date  -->
+            <div class="abstract-date">
+                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2018/07/26</span>
+            </div>
+            <!-- tags  -->
+            
+        </div>
+    </article>
+    
+    
+    
+    
+    
+    
+    <article class="index-post">
+        <a class="abstract-title" href = "/2018/07/26/单例模式/" >
+            
+                <span>单例模式</span>
+        </a>
+        <div class="abstract-content">
+            前言今天介绍下单例模式，单例模式（Singleton Pattern）是 Java 中最简单的设计模式之一。这种类型的设计模式属于创建型模式，它提供了一种创建对象的最佳方式。
+正文举个常见的单例模式例子，我们日常使用的电脑上都有一个回收站，在整个操作系统中，回收站只能有一个实例，整个系统都使用这个唯一的实例，而且回收站自行提供自己的实例。因此回收站是单例模式的应用。
+单例模式概念单例模式(Singleton Pattern)：确保某一个类只有一个实例，而且自行实例化并向整个系统提供这个实例，这个类称为单例类，它提供全局访问的方法。单例模式是一种对象创建型模式。
+单例模式结构图单例模式是结...
+        </div>
+        <div class="abstract-post-meta">
+            <!-- date  -->
+            <div class="abstract-date">
+                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2018/07/26</span>
+            </div>
+            <!-- tags  -->
+            
+        </div>
+    </article>
+    
     <!-- paginator  -->
     
     <nav class="page-nav">
-        <a class="extend prev" rel="prev" href="/archives/2018/07/page/3/">&#60; PREV</a><a class="page-number" href="/archives/2018/07/">1</a><a class="page-number" href="/archives/2018/07/page/2/">2</a><a class="page-number" href="/archives/2018/07/page/3/">3</a><span class="page-number current">4</span>
+        <a class="extend prev" rel="prev" href="/archives/2018/07/page/3/">&#60; PREV</a><a class="page-number" href="/archives/2018/07/">1</a><a class="page-number" href="/archives/2018/07/page/2/">2</a><a class="page-number" href="/archives/2018/07/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/archives/2018/07/page/5/">5</a><a class="page-number" href="/archives/2018/07/page/6/">6</a><a class="extend next" rel="next" href="/archives/2018/07/page/5/">NEXT &#62;</a>
     </nav>
     
 </main>
@@ -1415,9 +1520,837 @@ Collection接口、子接口以及实现类Collection接口
     
     
     
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     <div class="total-and-search">
         <div class="total-archive">
-        Total : 37
+        Total : 55
         </div>
         <!-- search  -->
         
@@ -1443,11 +2376,6 @@ Collection接口、子接口以及实现类Collection接口
     
     
         <li class="archive-post-item">
-            <span class="archive-post-date">07/27</span><a class="archive-post-title" href= "/2018/07/27/Spring详解4缓存与MQ概念篇（基于《spring实战第四版》）/" >Spring详解4缓存与MQ概念篇（基于《spring实战第四版》）</a>
-        </li>
-    
-    
-        <li class="archive-post-item">
             <span class="archive-post-date">07/27</span><a class="archive-post-title" href= "/2018/07/27/Spring详解3WEB篇（基于《spring实战第四版》）/" >Spring详解3WEB篇（基于《spring实战第四版》）</a>
         </li>
     
@@ -1458,87 +2386,7 @@ Collection接口、子接口以及实现类Collection接口
     
     
         <li class="archive-post-item">
-            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/zookeeper原理/" >zookeeper原理</a>
-        </li>
-    
-    
-        <li class="archive-post-item">
-            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/集合总体大纲/" >集合总体大纲</a>
-        </li>
-    
-    
-        <li class="archive-post-item">
-            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/TCP协议/" >TCP协议</a>
-        </li>
-    
-    
-        <li class="archive-post-item">
-            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/Netty——基本概念/" >Netty——基本概念</a>
-        </li>
-    
-    
-        <li class="archive-post-item">
-            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/nginx/" >nginx</a>
-        </li>
-    
-    
-        <li class="archive-post-item">
-            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/高并发编程-1/" >高并发编程-1</a>
-        </li>
-    
-    
-        <li class="archive-post-item">
-            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/RocketMQ基本概念/" >RocketMQ基本概念</a>
-        </li>
-    
-    
-        <li class="archive-post-item">
-            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/RPC/" >RPC</a>
-        </li>
-    
-    
-        <li class="archive-post-item">
-            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/springboot基本概念/" >springboot基本概念</a>
-        </li>
-    
-    
-        <li class="archive-post-item">
-            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/FastDFS/" >FastDFS</a>
-        </li>
-    
-    
-        <li class="archive-post-item">
-            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/单体架构与微服务架构/" >单体架构与微服务架构</a>
-        </li>
-    
-    
-        <li class="archive-post-item">
-            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/mangoDB基本操作和优化/" >mangoDB基本操作和优化</a>
-        </li>
-    
-    
-        <li class="archive-post-item">
-            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/ArrayList1.6/" >ArrayList1.6</a>
-        </li>
-    
-    
-        <li class="archive-post-item">
-            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/MQ选型对比RabbitMQ RocketMQ ActiveMQ Kafka/" >MQ选型对比RabbitMQ RocketMQ ActiveMQ Kafka</a>
-        </li>
-    
-    
-        <li class="archive-post-item">
-            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/HashMap1.6/" >HashMap1.6</a>
-        </li>
-    
-    
-        <li class="archive-post-item">
-            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/redis的主从复制、哨兵、集群/" >redis的主从复制、哨兵、集群</a>
-        </li>
-    
-    
-        <li class="archive-post-item">
-            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/ArrayList源码的数组copy方法/" >ArrayList源码的数组copy方法</a>
+            <span class="archive-post-date">07/27</span><a class="archive-post-title" href= "/2018/07/27/Spring详解4缓存与MQ概念篇（基于《spring实战第四版》）/" >Spring详解4缓存与MQ概念篇（基于《spring实战第四版》）</a>
         </li>
     
     
@@ -1548,17 +2396,12 @@ Collection接口、子接口以及实现类Collection接口
     
     
         <li class="archive-post-item">
-            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/HashMap1.8/" >HashMap1.8</a>
+            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/rabbitMQ/" >rabbitMQ</a>
         </li>
     
     
         <li class="archive-post-item">
-            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/《Netty实战4.1.16》/" >《Netty实战4.1.16》</a>
-        </li>
-    
-    
-        <li class="archive-post-item">
-            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/HashSet1.6/" >HashSet1.6</a>
+            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/单体架构与微服务架构/" >单体架构与微服务架构</a>
         </li>
     
     
@@ -1568,22 +2411,7 @@ Collection接口、子接口以及实现类Collection接口
     
     
         <li class="archive-post-item">
-            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/mysql sql概念/" >mysql sql概念</a>
-        </li>
-    
-    
-        <li class="archive-post-item">
-            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/java中方法传参/" >java中方法传参</a>
-        </li>
-    
-    
-        <li class="archive-post-item">
-            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/Serializable/" >Serializable</a>
-        </li>
-    
-    
-        <li class="archive-post-item">
-            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/TreeMap1.6/" >TreeMap1.6</a>
+            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/zookeeper原理/" >zookeeper原理</a>
         </li>
     
     
@@ -1593,12 +2421,32 @@ Collection接口、子接口以及实现类Collection接口
     
     
         <li class="archive-post-item">
-            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/redis安装/" >redis安装</a>
+            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/高并发编程-1/" >高并发编程-1</a>
         </li>
     
     
         <li class="archive-post-item">
-            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/layim+springBoot+netty+（dubbo__cloud）搭建web聊天系统（学习高并发）/" >layim+springBoot+netty+（dubbo__cloud）搭建web聊天系统（学习高并发）</a>
+            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/Netty——基本概念/" >Netty——基本概念</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/redis的主从复制、哨兵、集群/" >redis的主从复制、哨兵、集群</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/Serializable/" >Serializable</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/集合总体大纲/" >集合总体大纲</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/RocketMQ基本概念/" >RocketMQ基本概念</a>
         </li>
     
     
@@ -1608,12 +2456,187 @@ Collection接口、子接口以及实现类Collection接口
     
     
         <li class="archive-post-item">
+            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/FastDFS/" >FastDFS</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/工厂方法模式/" >工厂方法模式</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/ArrayList1.6/" >ArrayList1.6</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/抽象工厂模式/" >抽象工厂模式</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/mangoDB基本操作和优化/" >mangoDB基本操作和优化</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/单例模式/" >单例模式</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/java中方法传参/" >java中方法传参</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/原型模式/" >原型模式</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/layim+springBoot+netty+（dubbo__cloud）搭建web聊天系统（学习高并发）/" >layim+springBoot+netty+（dubbo__cloud）搭建web聊天系统（学习高并发）</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/建造者模式/" >建造者模式</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
             <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/session共享/" >session共享</a>
         </li>
     
     
         <li class="archive-post-item">
+            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/简单工厂模式/" >简单工厂模式</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/ArrayList源码的数组copy方法/" >ArrayList源码的数组copy方法</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/设计模式总纲/" >设计模式总纲</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/《Netty实战4.1.16》/" >《Netty实战4.1.16》</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/适配器模式/" >适配器模式</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/HashMap1.6/" >HashMap1.6</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/JVM内存模型/" >JVM内存模型</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/HashSet1.6/" >HashSet1.6</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/垃圾回收器/" >垃圾回收器</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/HashMap1.8/" >HashMap1.8</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/java和mango做模糊查询/" >java和mango做模糊查询</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/TreeMap1.6/" >TreeMap1.6</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/其他面试需要的概念/" >其他面试需要的概念</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/redis安装/" >redis安装</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/性能测试/" >性能测试</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/springboot基本概念/" >springboot基本概念</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/RPC/" >RPC</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/ribbon/" >ribbon</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/online-traffic项目记录/" >online-traffic项目记录</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/springboot，cloud使用maven的知识点/" >springboot，cloud使用maven的知识点</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/本地映射外网-ngork使用/" >本地映射外网-ngork使用</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/MQ选型对比RabbitMQ RocketMQ ActiveMQ Kafka/" >MQ选型对比RabbitMQ RocketMQ ActiveMQ Kafka</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/mysql sql概念/" >mysql sql概念</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
             <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/HTTP协议/" >HTTP协议</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/nginx/" >nginx</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/26</span><a class="archive-post-title" href= "/2018/07/26/TCP协议/" >TCP协议</a>
         </li>
     
     </div>
@@ -1654,17 +2677,27 @@ jsonContent:
         <div class="sidebar-panel-categories">
     <div class="sidebar-categories-name">
     
-        <span class="sidebar-category-name" data-categories="网络"><span class="iconfont-archer">&#xe60a;</span>网络</span>
-    
         <span class="sidebar-category-name" data-categories="中间件"><span class="iconfont-archer">&#xe60a;</span>中间件</span>
+    
+        <span class="sidebar-category-name" data-categories="JDK"><span class="iconfont-archer">&#xe60a;</span>JDK</span>
+    
+        <span class="sidebar-category-name" data-categories="网络"><span class="iconfont-archer">&#xe60a;</span>网络</span>
     
         <span class="sidebar-category-name" data-categories="基本框架"><span class="iconfont-archer">&#xe60a;</span>基本框架</span>
     
         <span class="sidebar-category-name" data-categories="数据库"><span class="iconfont-archer">&#xe60a;</span>数据库</span>
     
-        <span class="sidebar-category-name" data-categories="JDK"><span class="iconfont-archer">&#xe60a;</span>JDK</span>
-    
         <span class="sidebar-category-name" data-categories="分布式"><span class="iconfont-archer">&#xe60a;</span>分布式</span>
+    
+        <span class="sidebar-category-name" data-categories="设计模式"><span class="iconfont-archer">&#xe60a;</span>设计模式</span>
+    
+        <span class="sidebar-category-name" data-categories="JVM"><span class="iconfont-archer">&#xe60a;</span>JVM</span>
+    
+        <span class="sidebar-category-name" data-categories="面试"><span class="iconfont-archer">&#xe60a;</span>面试</span>
+    
+        <span class="sidebar-category-name" data-categories="工具"><span class="iconfont-archer">&#xe60a;</span>工具</span>
+    
+        <span class="sidebar-category-name" data-categories="SpringCloud"><span class="iconfont-archer">&#xe60a;</span>SpringCloud</span>
     
     </div>
     <div class="iconfont-archer sidebar-categories-empty">&#xe678;</div>
